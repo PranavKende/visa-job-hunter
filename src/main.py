@@ -14,6 +14,7 @@ from src.filters import apply_filters
 from src.scorer import score_all
 from src.storage import filter_new_jobs, save_jobs, save_daily_json
 from src.notifier import notify
+from src.llm_reranker import llm_rerank
 from src.sources import (
     AdzunaSource,
     RemotiveSource,
@@ -82,7 +83,8 @@ async def fetch_source(source, keywords: List[str], locations: List[dict]) -> tu
 
 
 async def run(dry_run: bool = False):
-    load_dotenv(ROOT / ".env")
+    load_dotenv(ROOT / ".env")           # job-hunter/.env
+    load_dotenv(ROOT.parent / ".env")    # parent folder fallback
     cfg = load_config()
     setup_logging(cfg.get("logging", {}))
 
@@ -134,7 +136,10 @@ async def run(dry_run: bool = False):
     min_score = cfg.get("notification", {}).get("min_score_to_notify", 40)
     # Hard requirement: only notify on jobs with confirmed or possible visa sponsorship
     visa_jobs = [j for j in new_jobs if j.visa_status in ("explicit", "possible")]
-    notify_jobs = [j for j in visa_jobs if j.score >= min_score]
+    scored_visa = [j for j in visa_jobs if j.score >= min_score]
+
+    # GPT-4o-mini second pass — verify visa is genuine and role is RPA-relevant
+    notify_jobs = await llm_rerank(scored_visa)
     logger.info(
         f"New jobs: {len(new_jobs)} | visa-confirmed: {len(visa_jobs)} | "
         f"notifiable (score≥{min_score}): {len(notify_jobs)}"

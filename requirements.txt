@@ -6,3 +6,4 @@ loguru>=0.7.2
 beautifulsoup4>=4.12.3
 lxml>=5.2.0
 tenacity>=8.3.0
+openai>=1.30.0

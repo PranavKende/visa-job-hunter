@@ -118,7 +118,8 @@ async def notify(jobs: List[Job], total_found: int, failed_sources: List[str]):
 
     chunks = build_message(jobs, total_found, failed_sources)
     for chunk in chunks:
-        success = await send_whatsapp(chunk)
+        # Try Telegram first (more reliable); fall back to CallMeBot
+        success = await send_telegram(chunk)
         if not success:
-            logger.info("Notifier: CallMeBot failed, trying Telegram fallback")
-            await send_telegram(chunk)
+            logger.info("Notifier: Telegram failed, trying CallMeBot fallback")
+            await send_whatsapp(chunk)

@@ -10,7 +10,7 @@ from src.models import Job
 from src.sources.base import BaseSource
 
 
-ADZUNA_COUNTRIES = {"gb", "de", "nl", "ie", "ca", "au", "sg", "us", "at", "be", "br", "in", "nz", "pl", "ru", "za"}
+ADZUNA_COUNTRIES = {"gb", "de", "nl", "ca", "au", "sg", "us", "at", "be", "br", "in", "nz", "pl", "ru", "za"}
 
 
 class AdzunaSource(BaseSource):

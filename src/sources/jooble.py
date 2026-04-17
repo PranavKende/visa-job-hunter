@@ -21,8 +21,8 @@ class JoobleSource(BaseSource):
         self.max_pages = config.get("max_pages", 5)
 
     async def fetch(self, keywords: List[str], locations: List[dict]) -> List[Job]:
-        if not self.api_key:
-            logger.warning("Jooble: missing JOOBLE_KEY — skipping")
+        if not self.api_key or self.api_key.startswith("your_") or self.api_key.startswith("http"):
+            logger.warning("Jooble: missing or placeholder JOOBLE_KEY — skipping")
             return []
 
         jobs: List[Job] = []
