@@ -1,0 +1,53 @@
+name: Daily Job Hunt
+
+on:
+  schedule:
+    # 01:30 UTC = 07:00 IST
+    - cron: '30 1 * * *'
+  workflow_dispatch:  # manual trigger for testing
+
+jobs:
+  hunt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run job hunter
+        env:
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
+          CALLMEBOT_PHONE: ${{ secrets.CALLMEBOT_PHONE }}
+          CALLMEBOT_API_KEY: ${{ secrets.CALLMEBOT_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m src.main
+
+      - name: Upload daily JSON artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jobs-${{ github.run_id }}
+          path: data/jobs_*.json
+          retention-days: 30
+
+      - name: Commit updated DB
+        if: success()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/jobs.db data/jobs_*.json || true
+          git diff --staged --quiet || git commit -m "chore: daily job hunt $(date -u +%Y-%m-%d)"
+          git push

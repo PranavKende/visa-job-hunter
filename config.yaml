@@ -1,0 +1,149 @@
+keywords:
+  primary:
+    - "RPA"
+    - "UiPath"
+    - "Blue Prism"
+    - "Intelligent Automation"
+    - "Agentic AI"
+    - "LangGraph"
+    - "Automation Architect"
+    - "Automation Lead"
+  secondary:
+    - "Robotic Process Automation"
+    - "LangChain"
+    - "Process Automation"
+    - "AI Automation"
+    - "Multi-Agent"
+    - "Celonis"
+
+job_titles:
+  - "Senior RPA Engineer"
+  - "RPA Team Lead"
+  - "RPA Solution Architect"
+  - "Intelligent Automation Lead"
+  - "AI Automation Engineer"
+  - "Agentic AI Engineer"
+  - "Automation Lead"
+  - "RPA Architect"
+
+geographies:
+  europe:
+    - country_code: "gb"
+      name: "United Kingdom"
+      adzuna_code: "gb"
+      priority: 1
+    - country_code: "de"
+      name: "Germany"
+      adzuna_code: "de"
+      priority: 1
+    - country_code: "nl"
+      name: "Netherlands"
+      adzuna_code: "nl"
+      priority: 1
+    - country_code: "ie"
+      name: "Ireland"
+      adzuna_code: "ie"
+      priority: 1
+    - country_code: "se"
+      name: "Sweden"
+      adzuna_code: null
+      priority: 2
+    - country_code: "dk"
+      name: "Denmark"
+      adzuna_code: null
+      priority: 2
+    - country_code: "no"
+      name: "Norway"
+      adzuna_code: null
+      priority: 2
+  north_america:
+    - country_code: "ca"
+      name: "Canada"
+      adzuna_code: "ca"
+      priority: 1
+  apac:
+    - country_code: "au"
+      name: "Australia"
+      adzuna_code: "au"
+      priority: 1
+    - country_code: "nz"
+      name: "New Zealand"
+      adzuna_code: null
+      priority: 2
+    - country_code: "sg"
+      name: "Singapore"
+      adzuna_code: "sg"
+      priority: 1
+    - country_code: "my"
+      name: "Malaysia"
+      adzuna_code: null
+      priority: 2
+  middle_east:
+    - country_code: "ae"
+      name: "UAE"
+      adzuna_code: null
+      priority: 2
+    - country_code: "qa"
+      name: "Qatar"
+      adzuna_code: null
+      priority: 2
+
+salary:
+  floor_usd: 60000
+  currency_conversion:
+    GBP: 1.27
+    EUR: 1.09
+    CAD: 0.74
+    AUD: 0.65
+    SGD: 0.74
+    AED: 0.27
+    QAR: 0.27
+    MYR: 0.23
+    SEK: 0.096
+    DKK: 0.146
+    NOK: 0.095
+    NZD: 0.60
+
+sources:
+  adzuna:
+    enabled: true
+    results_per_page: 50
+    max_pages: 3
+    rate_limit_delay: 1.0
+  jooble:
+    enabled: true
+    results_per_page: 20
+    max_pages: 5
+    rate_limit_delay: 1.5
+  remotive:
+    enabled: true
+    rate_limit_delay: 1.0
+  arbeitnow:
+    enabled: true
+    rate_limit_delay: 1.0
+  remoteok:
+    enabled: true
+    rate_limit_delay: 2.0
+  relocateme:
+    enabled: true
+    rate_limit_delay: 2.0
+
+scoring:
+  senior_lead_architect_title: 30
+  uipath_rpa_match: 20
+  agentic_ai_langraph: 15
+  target_country: 15
+  exp_alignment: 10
+  junior_title_penalty: -20
+  low_salary_penalty: -30
+
+notification:
+  max_jobs_in_message: 10
+  min_score_to_notify: 40
+  max_message_length: 1000
+
+logging:
+  level: "INFO"
+  rotation: "1 day"
+  retention: "30 days"
+  log_dir: "logs"
