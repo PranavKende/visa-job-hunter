@@ -133,13 +133,22 @@ async def run(dry_run: bool = False):
     # Save daily JSON audit
     save_daily_json(scored, date.today())
 
-    min_score = cfg.get("notification", {}).get("min_score_to_notify", 40)
-    # Hard requirement: only notify on jobs with confirmed or possible visa sponsorship
-    visa_jobs = [j for j in new_jobs if j.visa_status in ("explicit", "possible")]
-    scored_visa = [j for j in visa_jobs if j.score >= min_score]
+    min_score = cfg.get("notification", {}).get("min_score_to_notify", 30)
 
-    # GPT-4o-mini second pass — verify visa is genuine and role is RPA-relevant
-    notify_jobs = await llm_rerank(scored_visa)
+    # Hard drop: only skip jobs with confirmed-negative visa status
+    non_negative = [j for j in new_jobs if j.visa_status != "negative"]
+
+    # Take top 30 by score and send to GPT for visa + relevance verification
+    candidates = [j for j in non_negative if j.score >= min_score][:30]
+    visa_confirmed = [j for j in new_jobs if j.visa_status in ("explicit", "possible")]
+
+    logger.info(
+        f"New jobs: {len(new_jobs)} | visa-confirmed (regex): {len(visa_confirmed)} | "
+        f"candidates for LLM: {len(candidates)}"
+    )
+
+    # GPT-4o-mini verifies: is visa sponsorship realistic + is role RPA-relevant?
+    notify_jobs = await llm_rerank(candidates)
     logger.info(
         f"New jobs: {len(new_jobs)} | visa-confirmed: {len(visa_jobs)} | "
         f"notifiable (score≥{min_score}): {len(notify_jobs)}"
@@ -148,8 +157,7 @@ async def run(dry_run: bool = False):
     if not dry_run:
         # Persist to DB
         save_jobs(new_jobs)
-        # Send notification — total count shown is visa-confirmed count
-        await notify(notify_jobs, len(visa_jobs), failed_sources)
+        await notify(notify_jobs, len(notify_jobs), failed_sources)
     else:
         logger.info("DRY RUN — skipping DB save and notification")
         if notify_jobs:

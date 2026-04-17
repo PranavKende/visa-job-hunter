@@ -12,14 +12,23 @@ Candidate profile:
 - 9+ years experience in RPA: UiPath (Studio, Orchestrator, Maestro, RE Framework), Blue Prism
 - Skills: LangGraph, LangChain, Agentic AI, Multi-Agent LLM systems, Python, VB.NET, C#, SQL, Celonis
 - Target roles: Senior RPA Engineer, RPA Team Lead, RPA Architect, Intelligent Automation Lead, AI Automation Engineer
-- Hard requirement: employer must sponsor work visa + relocation from India
+- Hard requirement: employer must be open to sponsoring a work visa for someone relocating from India
 
-For each job, you must answer two questions with strict accuracy:
-1. VISA: Does this job GENUINELY offer visa sponsorship or relocation support for someone relocating from India? Answer "yes", "no", or "unclear". Be strict — "right to work required", "no sponsorship", "must be authorized" = "no".
-2. RELEVANT: Is this role genuinely relevant to RPA/Intelligent Automation/Agentic AI? A generic Python/ML/Data Engineer job is NOT relevant unless it specifically involves RPA tools or automation platforms.
+For each job evaluate TWO things:
 
-Respond ONLY with a JSON array, one object per job, in the same order as input:
-[{"visa": "yes|no|unclear", "relevant": true|false, "reason": "one sentence"}]"""
+1. VISA: Is this employer LIKELY to sponsor a work visa for an Indian candidate?
+   - "yes" = job explicitly mentions sponsorship/relocation, OR it's a senior role at a large/multinational company in a country that routinely sponsors (Germany Blue Card, UK Skilled Worker, Canada, Australia, Singapore, UAE) and the description does NOT say "must have right to work" or "no sponsorship"
+   - "no" = description says no sponsorship, must be authorized, citizens/PR only, right to work required
+   - "unclear" = small company, no mention either way, or ambiguous
+
+2. RELEVANT: Is this role genuinely about RPA / Intelligent Automation / Agentic AI?
+   - true = involves UiPath, Blue Prism, RPA platforms, automation development, LangGraph/LangChain agents
+   - false = generic software engineer, data engineer, ML engineer without automation focus
+
+Only pass jobs where visa="yes" AND relevant=true.
+
+Respond ONLY with a JSON object: {"results": [{"visa": "yes|no|unclear", "relevant": true|false, "reason": "one sentence"}, ...]}
+Same order as input."""
 
 
 async def llm_rerank(jobs: List[Job]) -> List[Job]:
