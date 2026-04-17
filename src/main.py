@@ -150,7 +150,7 @@ async def run(dry_run: bool = False):
     # GPT-4o-mini verifies: is visa sponsorship realistic + is role RPA-relevant?
     notify_jobs = await llm_rerank(candidates)
     logger.info(
-        f"New jobs: {len(new_jobs)} | visa-confirmed: {len(visa_jobs)} | "
+        f"New jobs: {len(new_jobs)} | visa-confirmed (regex): {len(visa_confirmed)} | "
         f"notifiable (score≥{min_score}): {len(notify_jobs)}"
     )
 
